@@ -20,6 +20,9 @@ namespace Hangman
         static char[] guessed_word;
         static int guesses_left;
         static StringBuilder incorrectly_guessed_letters;
+        static bool external_wordlist;
+        static int wordsCount;
+
         static string[] wordlist = {
                          "pengar",
                          "regissör",
@@ -48,7 +51,6 @@ namespace Hangman
         {
             Random rnd = new Random();
             int random_word_index;
-            int wordsCount;
             int i;
             int guessed_right_letters;
             int numberOfGuesses = 10;
@@ -72,15 +74,18 @@ namespace Hangman
             sb_wordlist_filename.Append("wordlist.txt");                                               // We now have a path to the word list file which should be located in the project folder            
             wordlist_filename = sb_wordlist_filename.ToString();
 
+            external_wordlist = false;
+
             if (File.Exists(wordlist_filename))
-	    {
+            {
                 string[] file_content = File.ReadAllLines(wordlist_filename);
 
                 if (file_content.Length >= 5)                                                          // Make sure that the wordlist file has atleast 5 words in it
                 {                                                                                      // otherwise use the internal wordlist 
                     wordlist = file_content;
+                    external_wordlist = true;
                 }
-	    }
+            }
 
             incorrectly_guessed_letters = new StringBuilder();
             wordsCount = wordlist.Length;
@@ -214,7 +219,8 @@ namespace Hangman
         static void PrintHangmanInfo()
         {
             Console.Clear();
-            Console.WriteLine("Hangman\n");
+            Console.WriteLine("Hangman\n\nUsing {0} word list of {1} words\n",external_wordlist ? "an external" : "a",wordsCount);
+
             Console.Write("Word to guess ({0} letters): ",secret_word_length);
 
             for (int i = 0; i < secret_word_length; i++)                         // Print guessed word
