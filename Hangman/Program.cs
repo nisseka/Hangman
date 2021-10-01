@@ -67,7 +67,7 @@ namespace Hangman
             i = sbWordlistFilename.ToString().IndexOf("bin");                                        // Locate where the bin folder is in the path
             if (i >= 0)
             {
-                sbWordlistFilename.Remove(i, sbWordlistFilename.Length - i);                       // Delete everything starting from the bin folder position to the end of the string
+                sbWordlistFilename.Remove(i, sbWordlistFilename.Length - i);                         // Delete everything starting from the bin folder position to the end of the string
             } else
                 sbWordlistFilename.Append('\\');                                                     // bin folder not found in the path; use the program file path
 
@@ -81,7 +81,7 @@ namespace Hangman
                 string[] fileContent = File.ReadAllLines(wordlistFilename);
 
                 if (fileContent.Length >= 5)                                                          // Make sure that the wordlist file has atleast 5 words in it
-                {                                                                                      // otherwise use the internal wordlist 
+                {                                                                                     // otherwise use the internal wordlist 
                     wordlist = fileContent;
                     externalWordlist = true;
                 }
@@ -90,7 +90,7 @@ namespace Hangman
             incorrectlyGuessedLetters = new StringBuilder();
             wordsCount = wordlist.Length;
 
-	    for (i = 0; i < wordsCount; i++)                                                            // Convert all the words to lowercase
+	    for (i = 0; i < wordsCount; i++)                                                           // Convert all the words to lowercase
 	    {
                 str = wordlist[i];
                 wordlist[i] = str.ToLower();
@@ -99,13 +99,13 @@ namespace Hangman
             do
             {
                 randomWordIndex = rnd.Next(wordsCount);
-                secretWord = wordlist[randomWordIndex];                              // Fetch the secret word for the list of wordlist
+                secretWord = wordlist[randomWordIndex];                                                 // Fetch the secret word for the list of wordlist
                 secretWordLength = secretWord.Length;
 
                 if (guessedWord==null || guessedWord.Length != secretWordLength)
-                    guessedWord = new char[secretWordLength];                        // only create a new array when the new array is of a different size than the old one
+                    guessedWord = new char[secretWordLength];                                           // only create a new array when a different size than the old one is needed
 
-                for (i = 0; i < secretWordLength; i++)                                // Fill guessed_word array with the character '_'
+                for (i = 0; i < secretWordLength; i++)                                                  // Fill guessedWord array with the character '_'
                 {
                     guessedWord[i] = '_';
                 }
@@ -125,7 +125,7 @@ namespace Hangman
                     {
                         str = PrintStringAndRequestStringFromUser($"\nGuess the whole word ({secretWordLength} letters). Enter a word:");
                         
-                        if (String.Compare(str,secretWord,true) == 0)                   // Perform a case insensitive comparison
+                        if (String.Compare(str,secretWord,true) == 0)                   // Perform a case-insensitive comparison
                         {
                             Console.Write("\nCorrect!");
                             secretWord.CopyTo(0, guessedWord, 0, secretWordLength);     // Copy the secret word to guessed_word
@@ -152,9 +152,9 @@ namespace Hangman
                     for (i = 0; i < secretWordLength; i++)                              // Scan through the secret word looking for the pressed key
                     {
                         if (secretWord[i] == keyPressedLowercase)
-                        {                                                               // letter was found in secret_word
+                        {                                                               // letter was found in secretWord
                             if (guessedWord[i] == '_')
-                            {                                                           // User hasn't guessed the letter before,
+                            {                                                           // User hasn't guessed the letter before
                                 guessedWord[i] = keyPressedLowercase;
                                 guessedRightLetters++;
                             }
@@ -171,21 +171,21 @@ namespace Hangman
                     }
 
                     if (letterFound)
-                    {                                                                   // letter was found in secret_word
+                    {                                                                   // letter was found in secretWord
                         if (guessedRightLetters >= secretWordLength)
                         {                                                               // The user has guessed the whole word
                             won = true;
                         }
                     }
                     else
-                    {                                                                   // letter was not found in secret_word
+                    {                                                                   // letter was not found in secretWord
                         if (incorrectlyGuessedLetters.ToString().IndexOf(keyPressedLowercase) >= 0)
                         {                                                               // User has guessed the letter before
-                            guessesLeft++;                                             // don't consume a guess; increase guesses_left with 1 since the for loop will decrease it with 1
+                            guessesLeft++;                                              // don't consume a guess; increase guesses_left with 1 since the for loop will decrease it with 1
                         }
                         else
                         {                                                               // User hasn't guessed the letter before,
-                            incorrectlyGuessedLetters.Append(keyPressedLowercase);  // add it to the list
+                            incorrectlyGuessedLetters.Append(keyPressedLowercase);      // add it to the list
                         }
                     }
                 }
@@ -196,8 +196,7 @@ namespace Hangman
                 if (won)
                 {
                     Console.WriteLine("You won! You guessed the word ({0}) in {1} tries", secretWord, numberOfGuesses - guessesLeft);
-                }
-                else
+                } else
                 {
                     Console.WriteLine("You lost!");
                 }
@@ -234,7 +233,7 @@ namespace Hangman
 /*
     * Function:    ConvertCharToLowercase
     * 
-    * Converts aa character to a lowercase character
+    * Converts a character to a lowercase character
     * 
     * returns:    The converted character
 */
