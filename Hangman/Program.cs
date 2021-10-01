@@ -16,11 +16,11 @@ namespace Hangman
 {
     class Program
     {
-        static int secret_word_length;
-        static char[] guessed_word;
-        static int guesses_left;
-        static StringBuilder incorrectly_guessed_letters;
-        static bool external_wordlist;
+        static int secretWordLength;
+        static char[] guessedWord;
+        static int guessesLeft;
+        static StringBuilder incorrectlyGuessedLetters;
+        static bool externalWordlist;
         static int wordsCount;
 
         static string[] wordlist = {
@@ -50,44 +50,44 @@ namespace Hangman
         static void Main(string[] args)
         {
             Random rnd = new Random();
-            int random_word_index;
+            int randomWordIndex;
             int i;
-            int guessed_right_letters;
+            int guessedRightLetters;
             int numberOfGuesses = 10;
-            string secret_word, str;
-            char key_pressed;
-            char key_pressed_lowercase;
+            string secretWord, str;
+            char keyPressed;
+            char keyPressedLowercase;
             bool exit = false;
             bool won;
-            bool letter_found;
-            bool letter_already_found;
-            string wordlist_filename;
-            StringBuilder sb_wordlist_filename = new StringBuilder(Directory.GetCurrentDirectory());   // Get the full path of the program executable file
+            bool letterFound;
+            bool letterAlreadyFound;
+            string wordlistFilename;
+            StringBuilder sbWordlistFilename = new StringBuilder(Directory.GetCurrentDirectory());   // Get the full path of the program executable file
 
-            i = sb_wordlist_filename.ToString().IndexOf("bin");                                        // Locate where the bin folder is in the path
+            i = sbWordlistFilename.ToString().IndexOf("bin");                                        // Locate where the bin folder is in the path
             if (i >= 0)
             {
-                sb_wordlist_filename.Remove(i, sb_wordlist_filename.Length - i);                       // Delete everything starting from the bin folder position to the end of the string
+                sbWordlistFilename.Remove(i, sbWordlistFilename.Length - i);                       // Delete everything starting from the bin folder position to the end of the string
             } else
-                sb_wordlist_filename.Append('\\');                                                     // bin folder not found in the path; use the program file path
+                sbWordlistFilename.Append('\\');                                                     // bin folder not found in the path; use the program file path
 
-            sb_wordlist_filename.Append("wordlist.txt");                                               // We now have a path to the word list file which should be located in the project folder            
-            wordlist_filename = sb_wordlist_filename.ToString();
+            sbWordlistFilename.Append("wordlist.txt");                                               // We now have a path to the word list file which should be located in the project folder            
+            wordlistFilename = sbWordlistFilename.ToString();
 
-            external_wordlist = false;
+            externalWordlist = false;
 
-            if (File.Exists(wordlist_filename))
+            if (File.Exists(wordlistFilename))
             {
-                string[] file_content = File.ReadAllLines(wordlist_filename);
+                string[] fileContent = File.ReadAllLines(wordlistFilename);
 
-                if (file_content.Length >= 5)                                                          // Make sure that the wordlist file has atleast 5 words in it
+                if (fileContent.Length >= 5)                                                          // Make sure that the wordlist file has atleast 5 words in it
                 {                                                                                      // otherwise use the internal wordlist 
-                    wordlist = file_content;
-                    external_wordlist = true;
+                    wordlist = fileContent;
+                    externalWordlist = true;
                 }
             }
 
-            incorrectly_guessed_letters = new StringBuilder();
+            incorrectlyGuessedLetters = new StringBuilder();
             wordsCount = wordlist.Length;
 
 	    for (i = 0; i < wordsCount; i++)                                                            // Convert all the words to lowercase
@@ -98,37 +98,37 @@ namespace Hangman
 
             do
             {
-                random_word_index = rnd.Next(wordsCount);
-                secret_word = wordlist[random_word_index];                              // Fetch the secret word for the list of wordlist
-                secret_word_length = secret_word.Length;
+                randomWordIndex = rnd.Next(wordsCount);
+                secretWord = wordlist[randomWordIndex];                              // Fetch the secret word for the list of wordlist
+                secretWordLength = secretWord.Length;
 
-                if (guessed_word==null || guessed_word.Length != secret_word_length)
-                    guessed_word = new char[secret_word_length];                        // only create a new array when the new array is of a different size than the old one
+                if (guessedWord==null || guessedWord.Length != secretWordLength)
+                    guessedWord = new char[secretWordLength];                        // only create a new array when the new array is of a different size than the old one
 
-                for (i = 0; i < secret_word_length; i++)                                // Fill guessed_word array with the character '_'
+                for (i = 0; i < secretWordLength; i++)                                // Fill guessed_word array with the character '_'
                 {
-                    guessed_word[i] = '_';
+                    guessedWord[i] = '_';
                 }
 
-                guessed_right_letters = 0;
-                incorrectly_guessed_letters.Clear();
+                guessedRightLetters = 0;
+                incorrectlyGuessedLetters.Clear();
                 won = false;
-                for (guesses_left = numberOfGuesses; guesses_left > 0 && won==false; guesses_left--)
+                for (guessesLeft = numberOfGuesses; guessesLeft > 0 && won==false; guessesLeft--)
                 {
                     PrintHangmanInfo();
 
                     Console.Write("Press a key (Press 1 to guess the whole word, other keys to guess individual letter(s)) ");
-                    key_pressed = Console.ReadKey().KeyChar;
+                    keyPressed = Console.ReadKey().KeyChar;
                     Console.WriteLine();
 
-                    if (key_pressed == '1')
+                    if (keyPressed == '1')
                     {
-                        str = PrintStringAndRequestStringFromUser($"\nGuess the whole word ({secret_word_length} letters). Enter a word:");
+                        str = PrintStringAndRequestStringFromUser($"\nGuess the whole word ({secretWordLength} letters). Enter a word:");
                         
-                        if (String.Compare(str,secret_word,true) == 0)                  // Perform a case insensitive comparison
+                        if (String.Compare(str,secretWord,true) == 0)                   // Perform a case insensitive comparison
                         {
                             Console.Write("\nCorrect!");
-                            secret_word.CopyTo(0, guessed_word, 0, secret_word_length); // Copy the secret word to guessed_word
+                            secretWord.CopyTo(0, guessedWord, 0, secretWordLength);     // Copy the secret word to guessed_word
                             won = true;
                         } else
                             Console.Write("\nWrong!");
@@ -138,54 +138,54 @@ namespace Hangman
 
                         continue;                                                       // skip the rest of the code in the for loop
                     }
-                    key_pressed_lowercase = ConvertCharToLowercase(key_pressed);
+                    keyPressedLowercase = ConvertCharToLowercase(keyPressed);
 
-                    if (key_pressed_lowercase < 'a' || key_pressed_lowercase > 'z' && key_pressed_lowercase != 'ö' && key_pressed_lowercase != 'ä' &&
-                         key_pressed_lowercase != 'å')
+                    if (keyPressedLowercase < 'a' || keyPressedLowercase > 'z' && keyPressedLowercase != 'ö' && keyPressedLowercase != 'ä' &&
+                         keyPressedLowercase != 'å')
                     {                                                                   // User pressed a non-letter key
-                        guesses_left++;                                                 // don't consume a guess; increase guesses_left with 1 since the for loop will decrease it with 1
+                        guessesLeft++;                                                  // don't consume a guess; increase guesses_left with 1 since the for loop will decrease it with 1
                         continue;                                                       // skip the rest of the code in the for loop
                     }
 
-                    letter_found = false;
-                    letter_already_found = false;
-                    for (i = 0; i < secret_word_length; i++)                            // Scan through the secret word looking for the pressed key
+                    letterFound = false;
+                    letterAlreadyFound = false;
+                    for (i = 0; i < secretWordLength; i++)                              // Scan through the secret word looking for the pressed key
                     {
-                        if (secret_word[i] == key_pressed_lowercase)
+                        if (secretWord[i] == keyPressedLowercase)
                         {                                                               // letter was found in secret_word
-                            if (guessed_word[i] == '_')
+                            if (guessedWord[i] == '_')
                             {                                                           // User hasn't guessed the letter before,
-                                guessed_word[i] = key_pressed_lowercase;
-                                guessed_right_letters++;
+                                guessedWord[i] = keyPressedLowercase;
+                                guessedRightLetters++;
                             }
                             else
-                                letter_already_found = true;
-                            letter_found = true;
+                                letterAlreadyFound = true;
+                            letterFound = true;
                         }
                     }
 
-                    if (letter_already_found)
+                    if (letterAlreadyFound)
                     {
-                        guesses_left++;                                                 // don't consume a guess; increase guesses_left with 1 since the for loop will decrease it with 1
+                        guessesLeft++;                                                  // don't consume a guess; increase guesses_left with 1 since the for loop will decrease it with 1
                         continue;                                                       // skip the rest of the code in the for loop
                     }
 
-                    if (letter_found)
+                    if (letterFound)
                     {                                                                   // letter was found in secret_word
-                        if (guessed_right_letters >= secret_word_length)
+                        if (guessedRightLetters >= secretWordLength)
                         {                                                               // The user has guessed the whole word
                             won = true;
                         }
                     }
                     else
                     {                                                                   // letter was not found in secret_word
-                        if (incorrectly_guessed_letters.ToString().IndexOf(key_pressed_lowercase) >= 0)
+                        if (incorrectlyGuessedLetters.ToString().IndexOf(keyPressedLowercase) >= 0)
                         {                                                               // User has guessed the letter before
-                            guesses_left++;                                             // don't consume a guess; increase guesses_left with 1 since the for loop will decrease it with 1
+                            guessesLeft++;                                             // don't consume a guess; increase guesses_left with 1 since the for loop will decrease it with 1
                         }
                         else
                         {                                                               // User hasn't guessed the letter before,
-                            incorrectly_guessed_letters.Append(key_pressed_lowercase);  // add it to the list
+                            incorrectlyGuessedLetters.Append(keyPressedLowercase);  // add it to the list
                         }
                     }
                 }
@@ -195,7 +195,7 @@ namespace Hangman
 
                 if (won)
                 {
-                    Console.WriteLine("You won! You guessed the word ({0}) in {1} tries", secret_word, numberOfGuesses - guesses_left);
+                    Console.WriteLine("You won! You guessed the word ({0}) in {1} tries", secretWord, numberOfGuesses - guessesLeft);
                 }
                 else
                 {
@@ -219,15 +219,15 @@ namespace Hangman
         static void PrintHangmanInfo()
         {
             Console.Clear();
-            Console.WriteLine("Hangman\n\nUsing {0} word list of {1} words\n",external_wordlist ? "an external" : "a",wordsCount);
+            Console.WriteLine("Hangman\n\nUsing {0} word list of {1} words\n",externalWordlist ? "an external" : "a",wordsCount);
 
-            Console.Write("Word to guess ({0} letters): ",secret_word_length);
+            Console.Write("Word to guess ({0} letters): ",secretWordLength);
 
-            for (int i = 0; i < secret_word_length; i++)                         // Print guessed word
+            for (int i = 0; i < secretWordLength; i++)                         // Print guessed word
             {
-                Console.Write(" {0}", guessed_word[i]);
+                Console.Write(" {0}", guessedWord[i]);
             }
-            Console.WriteLine("\n\nGuesses left: {0}\nIncorrectly guessed letters: {1}", guesses_left, incorrectly_guessed_letters);
+            Console.WriteLine("\n\nGuesses left: {0}\nIncorrectly guessed letters: {1}", guessesLeft, incorrectlyGuessedLetters);
 
         }
 
